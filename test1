@@ -1,0 +1,247 @@
+// projects: delete plx_config_input, rename sheet, set text color, set bold, italic, headline, trix-emailnotification
+
+// List: Send emails, print a range, copy and paste
+
+
+function test123123() {
+  var sheet = SpreadsheetApp.openById("16sVJ9C07yxsQ-SgxeKt-Pz9APricss_9fAwnQd3yICg").getSheets()[0];
+var chart = sheet.getCharts()[0];
+  Logger.log(chart + "jjuu");
+// Insert the spreadsheet chart in the first slide.
+var slide = SlidesApp.openById("1IhUAI51PWkAaa6IPpsAR0tolaGpXfhoSCeGrnFTcTME").getSlides()[0];
+slide.insertSheetsChart(chart);
+}
+
+
+function createSheet1() {
+var sheet = SpreadsheetApp.getActiveSheet();
+var chartq = sheet.getCharts()[0];
+chartq = chartq.modify()
+    .setOption('width', 800)
+    .setOption('height', 640)
+    .setPosition(5, 5, 0, 0)
+    .build();
+sheet.updateChart(chartq);
+var getchartss = sheet.getCharts();
+var newSlides = SlidesApp.create('Presentation Name');
+var newSlideId = newSlides.getId();
+var slide = SlidesApp.getActivePresentation().getSlides()[0];
+slide.insertSheetsChart(getchartss);
+   
+  
+/*  
+for (var i in getchartss) {
+  var getchartsss = getchartss[i];
+  Logger.log(getchartsss);
+  // Do something with the chart
+}
+Logger.log(getchartss);
+  /*
+var newSlides = SlidesApp.create('Presentation Name');
+var newSlideId = SlidesApp.getIdByName("Presentation Name");
+Logger.log(newSlideId);*/
+}
+
+function deleteSheet () {
+var ss = SpreadsheetApp.getActive();
+var sheet = ss.getSheetByName('ffw');
+ss.deleteSheet(sheet);
+}
+
+
+//make copy of spreadsheet and save it to particular folder
+function saveAsSpreadsheet(){ 
+  var sheet = SpreadsheetApp.getActiveSpreadsheet();
+  var range = sheet.getRange('Titanic!A1:B9');
+  sheet.setNamedRange('buildingNameAddress', range);
+  var TestRange = sheet.getRangeByName('buildingNameAddress').getValues(); 
+  Logger.log(TestRange); 
+  getcurrentid = sheet.getId();
+  Logger.log(getcurrentid);
+  var getfile = DriveApp.getFileById("17vkWiLo0vphB_K6LIWUfGGJX6fMCrq3DqQdLfe3tfsw");
+  getfileid = getfile.getId();
+  Logger.log(getfileid);
+  var file3 = getfile.makeCopy("Test File");
+  var file3id = file3.getId();
+  Logger.log(file3id);
+  SpreadsheetApp.openById(file3id).addEditor("tzhong@google.com").addViewer("tzhong@google.com") // this is w/o notification. tested and confirmed.
+}
+
+
+// Copy and paste
+function test1 () {
+var ss = SpreadsheetApp.getActiveSpreadsheet();
+var sheet = ss.getSheetByName("Titanic");
+  var newSheet = ss.insertSheet("Copy with format");
+  // Get the range from the sheet you will copy from. 
+  var weaponsRange = sheet.getRange("A1:G");
+  // Get the range of the sheet that is your paste target.
+  var pasteRange = newSheet.getRange("A1:G");
+  weaponsRange.copyTo(pasteRange);
+};
+
+
+
+// Get values
+SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Titanic").getRange("A1:B2").getValues();
+
+// Print a range
+function getsomerangelol() {
+  
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Titanic");
+  Logger.log(sheet.getSheetName());
+  var range = sheet.getRange("A1:B2");
+  var values = range.getValues();
+  Logger.log(values);
+  
+  // Print values one by one
+  for (var row in values) {
+    for (var col in values[row]) {
+      Logger.log(values[row][col]);
+    }
+  }
+
+// Print values joining multiple cells
+  for (var row in values) {
+    for (var col in values[row]) {
+      Logger.log(values[row][col]);
+      Logger.log("wtf");
+    }
+  }
+}
+
+
+// Send emails
+function sendEmails() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  urlq = ss.getUrl();
+  var range = ss.getRange("A1");
+  var abc = range.getValues();
+  var emailAddress = "tanwzwz@gmail.com";
+  var message = abc; // Second column
+  var subject = 'Sending emails from a Spreadsheet';
+  MailApp.sendEmail(emailAddress, subject, message, {
+    htmlBody:     '<body>' + 
+      '<h2><a href="'+urlq+'">' +abc+' </a></h2><br />' +
+        '<p> <font color="red">Greetings Earthling</font> </p>' +
+    '</body>'  
+    
+}); //Sends an email message.
+}
+
+
+
+/*
+
+Fetch values for each row in the Range.
+  var data = dataRange.getValues();
+  for (i in data) {
+    var row = data[i];
+    var emailAddress = row[0]; // First column
+    var message = row[1]; // Second column
+    var subject = 'Sending emails from a Spreadsheet';
+    MailApp.sendEmail(emailAddress, subject, message); //Sends an email message.
+
+
+DocumentApp.create('Hello, world!');   // Create a new Google Doc named 'Hello, world!'
+doc.getBody().appendParagraph('This document was created by Google Apps Script.');   // Access the body of the document, then add a paragraph.
+doc.getUrl();   // Get the URL of the document.
+Session.getActiveUser().getEmail();   // Get the email address of the active user - that's you.
+doc.getName();   // Get the name of the document to use as an email subject line.
+
+// Set hyperlink; https://stackoverflow.com/questions/32602495/how-to-add-a-hyperlink-in-a-google-docs-using-a-google-script
+function insertLink() {
+  var text = "link text\n";
+  var url = "www.google.com";
+  DocumentApp.getActiveDocument().getBody().editAsText().insertText(0, text).setLinkUrl(0, text.length, url);
+  
+
+// Set font color rule; https://developers.google.com/apps-script/reference/spreadsheet/conditional-format-rule-builder#setFontColor(String)
+var sheet = SpreadsheetApp.getActiveSheet();
+var range = sheet.getRange("A1:B3");
+var rule = SpreadsheetApp.newConditionalFormatRule()
+    .whenTextEqualTo("hello")
+    .setFontColor("#FF0000")
+    .setRanges([range])
+    .build();
+var rules = sheet.getConditionalFormatRules();
+rules.push(rule);
+sheet.setConditionalFormatRules(rules);
+
+}
+
+*/
+
+
+/**
+ * Sends emails with data from the current spreadsheet.
+ 
+function sendEmails() {
+  var sheet = SpreadsheetApp.getActiveSheet(); // Gets the active sheet in a spreadsheet.
+  var startRow = 2; // First row of data to process
+  var numRows = 2; // Number of rows to process
+
+// Fetch the range of cells A2:B3
+  var dataRange = sheet.getRange(startRow, 1, numRows, 2); // Returns the range with the top left cell at the given coordinates with the given number of rows and columns.
+
+// Fetch values for each row in the Range.
+  var data = dataRange.getValues();
+  for (i in data) {
+    var row = data[i];
+    var emailAddress = row[0]; // First column
+    var message = row[1]; // Second column
+    var subject = 'Sending emails from a Spreadsheet';
+    MailApp.sendEmail(emailAddress, subject, message); //Sends an email message.
+  }
+}
+*/
+
+/* eBook: Google Sheets Programming, p265
+function copyRowsToNewSheet() {
+var ss =
+SpreadsheetApp.getActiveSpreadsheet(),
+sourceSheet = ss.getSheetByName('Source'),
+newSheetName = 'Target',
+newSheet = ss.insertSheet(newSheetName),
+sourceRng = sourceSheet.getDataRange(),
+sourceRows = sourceRng.getValues(),
+i;
+newSheet.appendRow(sourceRows[0]);
+for (i = 1; i < sourceRows.length; i += 1) {
+if (sourceRows[i][1] <= 10000) {
+newSheet.appendRow(sourceRows[i]);
+*/
+
+
+/* eBook: Google Sheets Programming, p261
+function test_printSheetFormulas() {
+var sheetName = 'Formulas';
+printSheetFormulas(sheetName);
+}
+function printSheetFormulas(sheetName) {
+var ss =
+SpreadsheetApp.getActiveSpreadsheet(),
+sourceSheet = ss.getSheetByName(sheetName),
+usedRng = sourceSheet.getDataRange(),
+i,
+j,
+cell,
+cellAddr,
+cellFormula;
+for (i = 1; i <= usedRng.getLastRow();
+i += 1) {
+for (j = 1; j <= usedRng.getLastColumn();
+j += 1) {
+cell = usedRng.getCell(i, j);
+cellAddr = cell.getA1Notation();
+cellFormula = cell.getFormula();
+if (cellFormula) {
+Logger.log(cellAddr +
+': ' + cellFormula);
+
+}
+}
+}
+}
+
+*/
